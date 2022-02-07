@@ -1,0 +1,63 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © anselumana
+
+//@version=4
+study(title="Higher TimeFrame", shorttitle="HTF", overlay=true, max_boxes_count=500)
+
+// ***************************************************************
+// This script shows daily and weekly boxes on lower timeframes,
+// enabling the user to analyze low time frames while still having
+// the big picture in mind.
+// Each box represents the Open/Close and High/Low of the day/week.
+// ***************************************************************
+
+
+// user input
+var show_days = input(title="Show days", type=input.bool, defval=true)
+var show_weeks = input(title="Show weeks", type=input.bool, defval=false)
+var box_visibility = input(title="Box visibility", type=input.integer, defval=5, minval=1, maxval=80)
+
+var box_transparency = 100 - box_visibility
+var border_transparency = box_transparency - 20
+
+getColor(_open, _close) => _close >= _open  ? color.green : color.red
+
+// ****************
+// DAYS handling
+// ****************
+var last_day = 0
+
+// get daily bar data
+daily_high = security(syminfo.tickerid, "D", high, lookahead=true)
+daily_low = security(syminfo.tickerid, "D", low, lookahead=true)
+daily_open = security(syminfo.tickerid, "D", open, lookahead=true)
+daily_close = security(syminfo.tickerid, "D", close, lookahead=true)
+daily_open_time = security(syminfo.tickerid, "D", time, lookahead=true)
+daily_close_time = security(syminfo.tickerid, "D", time_close, lookahead=true)
+
+// if new day...
+if show_days and last_day != daily_open_time
+    last_day := daily_open_time
+    box_color = getColor(daily_open, daily_close)
+    box.new(left=daily_open_time, top=daily_high, right=daily_close_time, bottom=daily_low, border_color=color.new(box_color, border_transparency), xloc=xloc.bar_time, bgcolor=color.new(box_color, box_transparency))
+
+
+// ****************
+// WEEKS handling
+// ****************
+var last_week = 0
+
+// get weekly bar data
+weekly_high = security(syminfo.tickerid, "W", high, lookahead=true)
+weekly_low = security(syminfo.tickerid, "W", low, lookahead=true)
+weekly_open = security(syminfo.tickerid, "W", open, lookahead=true)
+weekly_close = security(syminfo.tickerid, "W", close, lookahead=true)
+weekly_open_time = security(syminfo.tickerid, "W", time, lookahead=true)
+weekly_close_time = security(syminfo.tickerid, "W", time_close, lookahead=true)
+
+// if new week...
+if show_weeks and last_week != weekly_open_time
+    last_week := weekly_open_time
+    box_color = getColor(weekly_open, weekly_close)
+    box.new(left=weekly_open_time, top=weekly_high, right=weekly_close_time, bottom=weekly_low, border_color=color.new(box_color, border_transparency), xloc=xloc.bar_time, bgcolor=color.new(box_color, box_transparency))
+

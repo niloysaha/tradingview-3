@@ -1,0 +1,59 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © anselumana
+
+// ***************************************************************
+// This script highlights trading sessions. It is meant for use
+// with FOREX markets. There are the supported sessions (UTC times):
+//     1. London (07:00-16:00)
+//     2. New York (12:00-20:00)
+//     3. Asia (21:00-08:00)
+// ***************************************************************
+
+//@version=4
+study(title="Sessions", shorttitle="Sessions", overlay=true, scale=scale.none)
+
+var timezone = "GMT-0"
+
+// UTC time periods of trading sessions
+var london_session = "0700-1600"
+var newyork_session = "1200-2000"
+var tokyo_session = "2100-0800"
+// UTC time of session start times (in session notation)
+var london_start = "0700-0701"
+var newyork_start = "1200-1201"
+var tokyo_start = "2100-2101"
+
+// colors
+var london_color = color.new(color.blue, 90)
+var newyork_color = color.new(color.orange, 90)
+var tokyo_color = color.new(color.fuchsia, 90)
+var london_start_color = color.new(color.blue, 70)
+var newyork_start_color = color.new(color.orange, 70)
+var tokyo_start_color = color.new(color.fuchsia, 70)
+
+// user input
+var show_london = input(title="London", type=input.bool, defval=true)
+var show_newyork = input(title="New York", type=input.bool, defval=true)
+var show_tokyo = input(title="Tokyo", type=input.bool, defval=true)
+var drawing_grp = "Drawing"
+var drawing_mode = input(title="Draw sessions as", defval="Start", options=["Start", "Range", "Start and range"], group=drawing_grp)
+
+// returns whether the current bar's start time is in the given session range
+is_in_range(session) =>
+    start_time = time("", session, timezone)
+    not na(start_time)
+
+var show_range = drawing_mode == "Range" or drawing_mode == "Start and range"
+var show_start = drawing_mode == "Start" or drawing_mode == "Start and range"
+
+// London painting
+bgcolor(show_london and show_range and is_in_range(london_session) ? london_color : na, title="London range") // Range
+plot(show_london and show_start and is_in_range(london_start) ? 10e20 : na, color=london_start_color, style=plot.style_histogram, title="London start") // Start time
+
+// New York painting
+bgcolor(show_newyork and show_range and is_in_range(newyork_session) ? newyork_color : na, title="New York range") // Range
+plot(show_newyork and show_start and is_in_range(newyork_start) ? 10e20 : na, color=newyork_start_color, style=plot.style_histogram, title="New York start") // Start time
+
+// Tokyo painting
+bgcolor(show_tokyo and show_range and is_in_range(tokyo_session) ? tokyo_color : na, title="Tokyo range") // Range
+plot(show_tokyo and show_start and is_in_range(tokyo_start) ? 10e20 : na, color=tokyo_start_color, style=plot.style_histogram, title="Tokyo start") // Start time

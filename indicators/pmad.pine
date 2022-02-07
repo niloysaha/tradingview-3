@@ -1,0 +1,15 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © anselumana
+
+// PMAD: Price Moving Average Divergences
+
+//@version=5
+indicator(title='PMAD', shorttitle='PMAD', overlay=false)
+
+wma  = request.security(syminfo.tickerid, 'W', ta.sma(close, 50))
+
+v = ((close / wma) - 1) * 100
+
+col = v >= 0 ? color.green : color.red
+
+plot(v, color=color.new(col, 0), style=plot.style_columns)

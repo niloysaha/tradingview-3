@@ -1,0 +1,10 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © anselumana
+
+//@version=5
+indicator(title='Crypto Cap', shorttitle='Crypto Cap', overlay=false)
+
+// get bar data of crypto total market cap
+[o, h, l, c] = request.security("CRYPTOCAP:TOTAL", timeframe.period, [open, high, low, close], gaps = barmerge.gaps_off)
+
+plot(c, title="Crypto Cap", color=color.new(color.blue, 0))

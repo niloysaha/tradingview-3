@@ -1,0 +1,23 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © anselumana
+
+//@version=5
+indicator(title='Diff', shorttitle='Diff', overlay=false)
+
+// user input
+// var base_symbol = input.symbol("", "Base Symbol")
+// var quote_symbol = input.symbol("", "Quote Symbol")
+
+// get bar data of both symbols
+[bo, bh, bl, bc] = request.security(base_symbol, timeframe.period, [open, high, low, close], gaps = barmerge.gaps_off)
+[qo, qh, ql, qc] = request.security(quote_symbol, timeframe.period, [open, high, low, close], gaps = barmerge.gaps_off)
+
+// calculate final bar
+o = bo / qo
+h = bh / qh
+l = bl / ql
+c = bc / qc
+
+paletteColor = c >= o ? color.green : color.red
+
+plotcandle(o, h, l, c, color = paletteColor, wickcolor = paletteColor, bordercolor = paletteColor)

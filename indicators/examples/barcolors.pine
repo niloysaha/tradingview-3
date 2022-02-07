@@ -1,0 +1,9 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © anselumana
+
+//@version=4
+study(title="Bar Colors", shorttitle="Bar Colors", overlay=true)
+
+is_green = close > open
+paint = is_green ? color.green : color.red
+label.new(bar_index, na, yloc=yloc.abovebar, color=paint, style=label.style_circle, size=size.tiny)

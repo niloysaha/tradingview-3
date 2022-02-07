@@ -1,0 +1,19 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © anselumana
+
+//@version=5
+indicator(title='Crypto Dominance', shorttitle='Crypto Dominance', overlay=false)
+
+// get bar data of BTC and ETH dominance
+[bo, bh, bl, bc] = request.security("CRYPTOCAP:BTC.D", timeframe.period, [open, high, low, close], gaps = barmerge.gaps_off)
+[eo, eh, el, ec] = request.security("CRYPTOCAP:ETH.D", timeframe.period, [open, high, low, close], gaps = barmerge.gaps_off)
+
+// calculate OTHERS dominance
+oo = 100 - (bo + eo)
+oh = 100 - (bh + eh)
+ol = 100 - (bl + el)
+oc = 100 - (bc + ec)
+
+plot(bc, title="BTC.D", color=color.new(color.orange, 0))
+plot(ec, title="ETH.D", color=color.new(color.blue, 0))
+plot(oc, title="OTH.D", color=color.new(color.green, 0))
